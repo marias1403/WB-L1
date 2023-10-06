@@ -1,5 +1,5 @@
 // Создаем модуль с функцией изменения окончания слов
-const russianPluralize = (number, words) => {
+const Pluralize = (number, words) => {
   // Проверяем, что передано правильное количество слов
   if (words.length !== 3) {
     throw new Error('Ожидается массив из трех слов');
@@ -23,12 +23,12 @@ const russianPluralize = (number, words) => {
 module.exports = russianPluralize;
 
 // Импортируем модуль
-const russianPluralize = require('./russianPluralize');
+const Pluralize = require('./Pluralize');
 
 // Примеры использования
-console.log(russianPluralize(112, ['сообщение', 'сообщения', 'сообщений'])); // 112 сообщений
-console.log(russianPluralize(12, ['сообщение', 'сообщения', 'сообщений'])); // 12 сообщений
-console.log(russianPluralize(1, ['сообщение', 'сообщения', 'сообщений'])); // 1 сообщение
-console.log(russianPluralize(1024, ['пользователь', 'пользователя', 'пользователей'])); // 1024 пользователя
-console.log(russianPluralize(1026, ['пользователь', 'пользователя', 'пользователей'])); // 1026 пользователей
-console.log(russianPluralize(121, ['пользователь', 'пользователя', 'пользователей'])); // 121 пользователь
+console.log(Pluralize(112, ['сообщение', 'сообщения', 'сообщений'])); // 112 сообщений
+console.log(Pluralize(12, ['сообщение', 'сообщения', 'сообщений'])); // 12 сообщений
+console.log(Pluralize(1, ['сообщение', 'сообщения', 'сообщений'])); // 1 сообщение
+console.log(Pluralize(1024, ['пользователь', 'пользователя', 'пользователей'])); // 1024 пользователя
+console.log(Pluralize(1026, ['пользователь', 'пользователя', 'пользователей'])); // 1026 пользователей
+console.log(Pluralize(121, ['пользователь', 'пользователя', 'пользователей'])); // 121 пользователь
