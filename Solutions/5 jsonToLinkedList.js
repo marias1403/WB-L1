@@ -16,17 +16,23 @@ class LinkedList{
   constructor() {
     this.head = null;
   }
-
+  // Метод, который добавляет новый узел с заданным значением в конец связного списка
   append(value) {
+    // Создаем новый узел и передаем значение (value)
     const newNode = new Node(value);
+    // если нет head, добавляем его
     if (!this.head) {
       this.head = newNode;
       return;
     }
+    // Если есть head, то инициализируем переменную ссылкой на головной узел
     let current = this.head;
+    // Цикл перебирает узлы в связном списке, пока не будет найден последний узел списка
+    // (тот, у которого next равен null)
     while (current.next) {
       current = current.next;
     }
+    // После завершения цикла, мы находим последний узел списка и устанавливаем его next равным новому узлу
     current.next = newNode;
   }
 }
