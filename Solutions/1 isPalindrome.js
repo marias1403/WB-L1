@@ -3,8 +3,8 @@
 // Решение. Есть два способа решения задачи: неоптимальный и оптимальный
 // Оптимальное решение задачи заключается в том, чтобы решить задачу с помощью указателей (pointers)
 // В неоптимальном решении применяются встроенные методы .split("").reverse().join("")
-// Ниже приведено оптимальное решение c использованием двух указателей
-function isPalindromeOptimal(string) {
+// Ниже приведено оптимальное решение с использованием двух указателей
+function isPalindrome1(string) {
   // Удаляем пробелы из строки и приводим все символы к нижнему регистру
   string = string.replace(/ /g, "").toLowerCase();
 
@@ -28,11 +28,12 @@ function isPalindromeOptimal(string) {
   return true;
 }
 
-isPalindromeOptimal("Аргентина манит негра");
-isPalindromeOptimal("Эта строка не палидром");
+isPalindrome1("Аргентина манит негра");
+isPalindrome1("Эта строка не палиндром");
+
 
 // Ниже приведено неоптимальное решение
-function isPalindromeSuboptimal(string) {
+function isPalindrome2(string) {
   // Удаляем пробелы из строки и приводим все символы к нижнему регистру
   string = string.replace(/ /g, "").toLowerCase();
 
@@ -43,5 +44,5 @@ function isPalindromeSuboptimal(string) {
   return string === string.split("").reverse().join("");
 }
 
-isPalindromeSuboptimal("Аргентина манит негра");
-isPalindromeSuboptimal("Эта строка не палидром")
+isPalindrome2("Аргентина манит негра");
+isPalindrome2("Эта строка не палиндром")
