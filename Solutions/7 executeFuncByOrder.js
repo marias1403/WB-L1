@@ -4,7 +4,7 @@
 
 // Решение. В данной задаче используем промисы и функции async/await.
 // Каждая функция должна вызвать resolve, чтобы перейти к следующей функции в цикле
-async function executeFunctionsByOrder(functions) {
+async function executeFuncByOrder(functions) {
   for (let i = 0; i < functions.length; i++) {
     await new Promise((resolve) => {
       functions[i](i, resolve);
@@ -28,4 +28,4 @@ const functions = [
   },
 ];
 
-executeFunctionsByOrder(functions);
+executeFuncByOrder(functions);
