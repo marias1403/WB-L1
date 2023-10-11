@@ -1,0 +1,91 @@
+<!-- Условие.
+Задача: Создать и добавить стиль для элемента: Напишите функцию, которая создает новый элемент,
+добавляет его в DOM и устанавливает для него стиль с помощью CSS. -->
+
+<!-- Решение -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>25. Добавление и стилизация элемента</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #9FBDC7;
+    }
+    .title {
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #ffffff;
+    }
+    .list {
+      margin: 0 50px 30px;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      box-sizing: border-box;
+    }
+    .button {
+      margin: 0;
+      padding: 5px 10px;
+      width: 180px;
+      height: 44px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #21323C;
+      border: none;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+    .button:hover {
+      opacity: .8;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">25. Добавление и стилизация элемента</h1>
+    <ul id="suggestions" class="list"></ul>
+    <button class="button" onclick="createAndStyleElement('li', 'suggestions', elementStyles)">Добавить элемент</button>
+  </div>
+  <script>
+    function createAndStyleElement(tagName, parentId, styles) {
+      const newElement = document.createElement(tagName);
+      for (const property in styles) {
+        if (styles.hasOwnProperty(property)) {
+          newElement.style[property] = styles[property];
+        }
+      }
+      const parent = document.getElementById(parentId);
+      parent.appendChild(newElement);
+    }
+
+    const elementStyles = {
+      width: "80px",
+      height: "80px",
+      backgroundColor: "#ffffff",
+      borderRadius: "8px",
+      boxShadow: "0 1px 2px rgba(0,0,0,0.15)"
+    }
+  </script>
+</body>
+</html>

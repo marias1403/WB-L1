@@ -1,0 +1,14 @@
+{
+  "name": "wb-l1",
+  "version": "1.0.0",
+  "description": "Решение задач по JS",
+  "main": "16 module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maria Arkhipova",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
+}

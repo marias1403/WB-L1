@@ -1,0 +1,104 @@
+<!-- Условие.
+Задача: Добавить анимацию для элемента: Напишите функцию, которая добавляет анимацию для элемента
+на веб-странице, например, плавное изменение его положения или размера. -->
+
+<!-- Решение -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>27. Добавить анимацию для элемента</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #87629E;
+    }
+    .title {
+      margin: 50px;
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #ffffff;
+    }
+    @keyframes grow {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes shrink {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(0.8);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .element {
+      width: 120px;
+      height: 120px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+    .button {
+      margin: 50px 0 0;
+      padding: 5px 10px;
+      width: 180px;
+      height: 44px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #000000;
+      border: none;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+    .button:hover {
+      opacity: .8;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">27. Добавить анимацию для элемента</h1>
+    <div class="element" id="elementToAnimate"></div>
+    <button class="button" id="animateButton" onclick="addElementAnimation()">Включить анимацию</button>
+  </div>
+  <script>
+    const elementToAnimate = document.getElementById("elementToAnimate");
+    const animateButton = document.getElementById("animateButton");
+    let animationActive = false;
+    function addElementAnimation() {
+      if (animationActive) {
+        elementToAnimate.style.animation = "none";
+        animateButton.textContent = "Включить анимацию";
+      } else {
+        elementToAnimate.style.animation = "grow 2s ease-in-out infinite, shrink 2s ease-in-out infinite";
+        animateButton.textContent = "Остановить анимацию";
+      }
+      animationActive = !animationActive;
+    }
+  </script>
+</body>
+</html>
