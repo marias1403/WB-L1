@@ -117,7 +117,7 @@
         clone.querySelector(".subtitle").textContent = data[currentIndex].subtitle;
         clone.querySelector(".text").textContent = data[currentIndex].text;
         const container = document.querySelector(".list");
-        container.appendChild(clone);
+        container.append(clone);
         currentIndex = (currentIndex + 1) % data.length;
       } else {
         console.error('Шаблон не найден.');

@@ -1,0 +1,23 @@
+<!-- Условие. Посчитайте сколько раз можно вызвать функцию document.write() внутри document.write().
+Объясните результат. -->
+
+<!-- Решение. Создаем рекурсивную функцию, которая вызывает document.write() внутри document.write().
+Создаем переменную count для подсчета количества вызовов функции, каждый раз при вызове функции
+увеличиваем значение переменной на +1. В итоге консоль покажет, что функцию можно вызвать 11406 раз.
+После чего происходит превышение максимального размера стека вызовов браузера -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <title>22. Рекурсия с document.write()</title>
+</head>
+<body>
+<script>
+  let count = 0;
+  function recursiveDocumentWrite() {
+    console.log(count++);
+    document.write(recursiveDocumentWrite());
+  }
+  recursiveDocumentWrite();
+</script>
+</body>
+</html>
