@@ -1,0 +1,113 @@
+<!-- Условие.
+Задача: Взаимодействие с формами: Напишите функцию, которая получает данные из формы
+на веб-странице и выполняет определенные действия с этими данными, например, отправляет
+их на сервер или отображает всплывающее окно с результатами. -->
+
+<!-- Решение -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>29. Взаимодействие с формами</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #9DA5B4;
+    }
+    .title {
+      margin: 50px;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #ffffff;
+    }
+    .form {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 20px;
+    }
+    .label {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #000000;
+      font-family: Arial, sans-serif;
+    }
+    .input {
+      width: 100%;
+      height: 40px;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #000000;
+      font-family: Arial, sans-serif;
+    }
+    .button {
+      margin: 50px 0 0;
+      padding: 5px 10px;
+      width: 100%;
+      height: 44px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #000000;
+      border: none;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+    .button:hover {
+      opacity: .8;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">29. Взаимодействие с формами</h1>
+    <form class="form">
+      <label for="name" class="label">Имя
+        <input id="name" type="text" name="name" class="input" placeholder="Введите имя">
+      </label>
+      <label for="email" class="label">Почта
+        <input id="email" type="email" name="email" class="input" placeholder="Введите email">
+      </label>
+      <button class="button" type="submit">Отправить</button>
+    </form>
+  </div>
+  <script>
+    function handleForm(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      alert("Имя: " + name + "\nПочта: " + email);
+    }
+    const form = document.querySelector(".form");
+    form.addEventListener("submit", handleForm);
+  </script>
+</body>
+</html>
