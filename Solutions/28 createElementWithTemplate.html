@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Title</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #21323C;
+    }
+    .title {
+      margin: 50px;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #ffffff;
+    }
+    .list {
+      margin: 0 50px;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      box-sizing: border-box;
+    }
+    .element {
+      padding: 20px;
+      width: fit-content;
+      height: fit-content;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+    .subtitle {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+      color: #000000;
+    }
+    .text {
+      margin: 0;
+      padding: 10px 0 0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #000000;
+    }
+    .button {
+      margin: 50px 0 0;
+      padding: 5px 10px;
+      width: 180px;
+      height: 44px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #000000;
+      border: none;
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+    .button:hover {
+      opacity: .8;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">28. Создать и добавить элемент с использованием шаблонов</h1>
+    <ul class="list"></ul>
+    <button class="button" onclick="createElementWithTemplate()">Добавить элемент</button>
+  </div>
+  <template class="template">
+    <li class="element">
+      <h2 class="subtitle"></h2>
+      <p class="text"></p>
+    </li>
+  </template>
+  <script>
+    const data = [
+      { subtitle: "Заголовок1", text: "Текст1" },
+      { subtitle: "Заголовок2", text: "Текст2" },
+      { subtitle: "Заголовок3", text: "Текст3" },
+      { subtitle: "Заголовок4", text: "Текст4" },
+      { subtitle: "Заголовок5", text: "Текст5" },
+      { subtitle: "Заголовок6", text: "Текст6" },
+      { subtitle: "Заголовок7", text: "Текст7" },
+      { subtitle: "Заголовок8", text: "Текст8" },
+      { subtitle: "Заголовок9", text: "Текст9" },
+      { subtitle: "Заголовок10", text: "Текст10" },
+    ];
+    let currentIndex = 0;
+    function createElementWithTemplate() {
+      const template = document.querySelector(".template");
+      if (template) {
+        const clone = template.content.querySelector(".element").cloneNode(true);
+        clone.querySelector(".subtitle").textContent = data[currentIndex].subtitle;
+        clone.querySelector(".text").textContent = data[currentIndex].text;
+        const container = document.querySelector(".list");
+        container.appendChild(clone);
+        currentIndex = (currentIndex + 1) % data.length;
+      } else {
+        console.error('Шаблон не найден.');
+      }
+    }
+  </script>
+</body>
+</html>
