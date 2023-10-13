@@ -1,0 +1,241 @@
+<!-- Условие.
+Разработайте страницу, отображающую таблицу с данными. Требования: данные должны загружаться
+при загрузке страницы, необходимо реализовать сортировку по убыванию и по возрастания для всех
+колонок, необходимо реализовать клиентскую пагинацию (50 элементов на странице)-->
+
+<!-- Решение -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24. Таблица с данными</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #F2E9CA;
+    }
+    .title {
+      margin: 50px;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #000000;
+    }
+    .wrapper {
+      padding: 0 50px 100px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th {
+      position: relative;
+    }
+    td, th {
+      border: 1px solid #E6D5A0;
+      text-align: left;
+      padding: 8px;
+    }
+    tr:nth-child(even) {
+      background-color: #E6D5A0;
+    }
+    .sortButton {
+      padding: 0;
+      cursor: pointer;
+      background-image: url(../images/sort_icon.svg);
+      height: 15px;
+      width: 10px;
+      background-color: transparent;
+      border: none;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 10px 15px;
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translate(0, -50%);
+    }
+    .sortButton:active {
+      opacity: .5;
+    }
+    .hidden {
+      display: none;
+    }
+    .pagination-container {
+      padding: 50px 0 0;
+      width: calc(100% - 2rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .pagination-number,
+    .pagination-button{
+      font-size: 1.1rem;
+      background-color: transparent;
+      border: none;
+      margin: 0.25rem 0.25rem;
+      cursor: pointer;
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: .2rem;
+    }
+    .pagination-number:hover,
+    .pagination-button:not(.disabled):hover {
+      background: #fff;
+    }
+    .pagination-number.active {
+      color: #fff;
+      background: #000000;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">24. Таблица с данными</h1>
+    <div class="wrapper">
+      <table class="table" id="table-body">
+        <tr>
+          <th>First name
+            <button class="sortButton" onclick="sortTable('fname')"></button>
+          </th>
+          <th>Last name
+            <button class="sortButton" onclick="sortTable('lname')"></button>
+          </th>
+          <th>Telephone
+            <button class="sortButton" onclick="sortTable('tel')"></button>
+          </th>
+          <th>Address
+            <button class="sortButton" onclick="sortTable('address')"></button>
+          </th>
+          <th>City
+            <button class="sortButton" onclick="sortTable('city')"></button>
+          </th>
+          <th>State
+            <button class="sortButton" onclick="sortTable('state')"></button>
+          </th>
+          <th>Zip-code
+            <button class="sortButton" onclick="sortTable('zip')"></button>
+          </th>
+        </tr>
+        <tbody id="table-data">
+        </tbody>
+      </table>
+      <nav class="pagination-container">
+        <div id="pagination-numbers"></div>
+      </nav>
+    </div>
+  </div>
+  <script>
+    let tableData = [];
+    const tableBody = document.getElementById("table-data");
+    const paginationNumbers = document.getElementById("pagination-numbers");
+    const paginationLimit = 50;
+    let currentPage = 1;
+    let currentSortColumn = null;
+
+    const appendPageNumber = (index) => {
+      const pageNumber = document.createElement("button");
+      pageNumber.className = "pagination-number";
+      pageNumber.innerHTML = index;
+      pageNumber.setAttribute("page-index", index);
+      pageNumber.setAttribute("aria-label", "Page " + index);
+      paginationNumbers.appendChild(pageNumber);
+    }
+
+    const getPaginationNumbers = (tableData) => {
+      const pageCount = Math.ceil(tableData.length / paginationLimit);
+      for (let i = 1; i <= pageCount; i++) {
+        appendPageNumber(i);
+      }
+    };
+
+    const handleActivePageNumber = () => {
+      document.querySelectorAll(".pagination-number").forEach((button) => {
+        button.classList.remove("active");
+        const pageIndex = Number(button.getAttribute("page-index"));
+        if (pageIndex === currentPage) {
+          button.classList.add("active");
+        }
+      });
+    };
+
+    const setCurrentPage = (pageNum) => {
+      currentPage = pageNum;
+      handleActivePageNumber();
+
+      const prevRange = (pageNum - 1) * paginationLimit;
+      const currRange = pageNum * paginationLimit;
+
+      const tableItems = tableBody.querySelectorAll("tr");
+      tableItems.forEach((item, index) => {
+        item.classList.add("hidden");
+        if (index >= prevRange && index < currRange) {
+          item.classList.remove("hidden");
+        }
+      });
+    };
+
+    function fetchData() {
+      fetch("http://www.filltext.com/?rows=1000&fname=%7BfirstName%7D&lname=%7BlastName%7D&tel=%7Bphone%7Cformat%7D&address=%7BstreetAddress%7D&city=%7Bcity%7D&state=%7BusState%7Cabbr%7D&zip=%7Bzip%7D&pretty=true")
+        .then(response => response.json())
+        .then(data => {
+          tableData = data;
+          getPaginationNumbers(data);
+          displayData(data);
+          document.querySelectorAll(".pagination-number").forEach((button) => {
+            const pageIndex = Number(button.getAttribute("page-index"));
+
+            if (pageIndex) {
+              button.addEventListener("click", () => {
+                setCurrentPage(pageIndex);
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("Ошибка при получении данных:", error);
+        });
+    }
+    function displayData(data) {
+      tableBody.innerHTML = '';
+      data.forEach(item => {
+        const row = document.createElement("tr");
+        for (const key in item) {
+          const cell = document.createElement("td");
+          cell.textContent = item[key];
+          row.append(cell);
+        }
+        row.classList.add("hidden");
+        tableBody.append(row);
+      });
+      setCurrentPage(1);
+    }
+    function sortTable(fieldName) {
+      console.log(tableData);
+      if (currentSortColumn === fieldName) {
+        tableData.reverse();
+      } else {
+        tableData.sort((a, b) => a[fieldName] > b[fieldName] ? 1 : -1);
+        currentSortColumn = fieldName;
+      }
+      displayData(tableData);
+    }
+    fetchData();
+  </script>
+</body>
+</html>
