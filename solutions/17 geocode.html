@@ -101,12 +101,20 @@
       border-top: none;
       padding: 0;
     }
+    .text {
+      font-size: 14px;
+      line-height: 16px;
+      font-weight: 400;
+      color: #000000;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
   </style>
 </head>
 <body class="body">
   <div class="container">
     <h1 class="title">17. Геокодинг адреса</h1>
-    <div class="wrapper">
+    <div class="wrapper" id="wrapper">
       <label class="label" for="addressInput">Адрес
         <input class="input" type="text" id="addressInput" placeholder="Введите адрес">
       </label>
@@ -119,6 +127,7 @@
     // Получение элементов DOM
     const addressInput = document.getElementById("addressInput");
     const addressList = document.getElementById("suggestions");
+    const wrapper = document.getElementById("wrapper");
 
     // Функция для выполнения геокодирования
     async function geocodeAddress(address) {
@@ -134,20 +143,41 @@
 
     // Функция для обновления выпадающего списка
     function updateAddressList(results) {
+      console.log(results);
       addressList.innerHTML = '';
-      if (results) {
+      if (results.length === 0) {
+        addressList.style.display = 'none';
+        const noResultsText = document.createElement('p');
+        noResultsText.textContent = 'Ничего не найдено';
+        noResultsText.classList.add('text');
+        wrapper.append(noResultsText);
+      } else {
         addressList.style.display = 'flex';
         results.forEach((result) => {
           const listItem = document.createElement('li');
           listItem.classList.add('item');
           listItem.textContent = result.GeoObject.metaDataProperty.GeocoderMetaData.text;
+          listItem.addEventListener('click', (e) => {
+            addressInput.value = e.target.textContent;
+            addressList.style.display = 'none';
+          })
           addressList.append(listItem);
         });
       }
     }
 
+    function debounce(func, delay) {
+      let timer;
+      return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          func(...args);
+        }, delay);
+      };
+    }
+
     // Обработчик события при вводе адреса
-    addressInput.addEventListener('input', async () => {
+    const debouncedInputHandler = debounce(async () => {
       const address = addressInput.value.replace(/\s+/g, '+');
       if (address === '') {
         addressList.innerHTML = '';
@@ -158,7 +188,8 @@
       if (result) {
         updateAddressList(result);
       }
-    });
+    }, 500);
+    addressInput.addEventListener('input', debouncedInputHandler);
   </script>
 </body>
 </html>
