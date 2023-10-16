@@ -1,0 +1,226 @@
+<!-- Условие.
+Реализовать виджет, отображающий список постов из любого паблика в VK (подойдет любой паблик, где постов очень много).
+Например, с помощью этой функции API VK. Виджет должен иметь фиксированные размеры и возможность прокрутки.
+При прокрутке содержимого виджета до конца должны подгружаться новые посты.
+Необходимо реализовать возможность кэширования уже загруженных данных: если пользователь закрыл страницу,
+а потом снова открыл ее, виджет должен отображать все загруженные ранее данные (новые данные должны подгружаться из учета уже загруженных ранее).
+При переполнении localStorage, данные, загруженные последними должны вытеснять данные загруженные первыми. -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>19. Виджет для постов из паблика в VK</title>
+  <style>
+    .body {
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #5181B8;
+    }
+    .title {
+      margin: 50px;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 48px;
+      color: #ffffff;
+    }
+    .widget {
+      margin: 0;
+      list-style: none;
+      padding: 20px 20px;
+      width: 450px;
+      height: 500px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-sizing: border-box;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      row-gap: 50px;
+    }
+    .content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      row-gap: 10px;
+    }
+    .image {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: none;
+      border-radius: 5px;
+    }
+    .link {
+      display: none;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #5181B8;
+      text-decoration: underline;
+    }
+    .post-title {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #000000;
+    }
+    .post-data-wrapper {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+    .post-data {
+      padding: 5px 12px;
+      width: fit-content;
+      height: 32px;
+      border-radius: 16px;
+      background-color: #EBEDF0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      column-gap: 5px;
+    }
+    .icon {
+      width: 20px;
+      height: 20px;
+      object-fit: cover;
+    }
+    .quantity {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16px;
+      color: #838C98;
+    }
+  </style>
+</head>
+<body class="body">
+  <div class="container">
+    <h1 class="title">19. Виджет для постов из паблика в VK</h1>
+    <ul class="widget" id="widget"></ul>
+  </div>
+  <template class="template">
+    <li class="post">
+      <div class="content">
+        <img class="image" src="" alt="" />
+        <a class="link" href=""></a>
+        <p class="post-title"></p>
+      </div>
+      <div class="post-data-wrapper">
+        <div class="post-data">
+          <img class="icon" src="../images/like_icon.svg" alt="Лайки" />
+          <span class="quantity likes"></span>
+        </div>
+        <div class="post-data">
+          <img class="icon" src="../images/comment_icon.svg" alt="Комменты" />
+          <span class="quantity comments"></span>
+        </div>
+        <div class="post-data">
+          <img class="icon" src="../images/repost_icon.svg" alt="Репосты" />
+          <span class="quantity reposts"></span>
+        </div>
+        <div class="post-data">
+          <img class="icon" src="../images/views_icon.svg" alt="Просмотры" />
+          <span class="quantity views"></span>
+        </div>
+      </div>
+    </li>
+  </template>
+  <script type="text/javascript">
+    const accessToken = '0bc66ca80bc66ca80bc66ca85808d394fa00bc60bc66ca86eea7e892725ea937520866c';
+    const groupId = -168377641;
+    const count = 10;
+    const version = 5.131;
+    function callback(result) {
+      if (result.response) {
+        const posts = result.response.items;
+        for (const post of posts) {
+          console.log(post);
+          createWidgetItem(post);
+        }
+      } else {
+        console.error('Ошибка в ответе:', result);
+      }
+    }
+    const script = document.createElement('SCRIPT');
+    script.src = `https://api.vk.com/method/wall.get?owner_id=${groupId}&count=${count}&access_token=${accessToken}&v=${version}&callback=callback`;
+    document.getElementsByTagName("head")[0].appendChild(script);
+
+    const widget = document.getElementById("widget");
+
+    function createWidgetItem(data) {
+      const template = document.querySelector(".template");
+      const newPost = template.content.querySelector(".post").cloneNode(true);
+      const image = newPost.querySelector(".image");
+      const link = newPost.querySelector(".link");
+      data.attachments.forEach((attachment) => {
+        if (attachment.type === "photo") {
+          image.style.display = "block";
+          image.src = attachment.photo.sizes[2].url;
+          image.alt = attachment.photo.text;
+        } else if (attachment.type === "link") {
+          link.style.display = "block";
+          link.innerHTML = attachment.link.title;
+          link.href = attachment.link.url;
+        } else if (attachment.type === "video") {
+          newPost.style.display = "none";
+        }
+      });
+      newPost.querySelector(".post-title").innerHTML = data.text.replace(/\n/g, "<br>");
+      const likes = newPost.querySelector(".likes")
+      if (data.likes.count === 0) {
+        likes.style.display = "none";
+      } else {
+        likes.textContent = data.likes.count;
+      }
+      const comments = newPost.querySelector(".comments");
+      if (data.comments.count === 0) {
+        comments.style.display = "none";
+      } else {
+        comments.textContent = data.comments.count;
+      }
+      const reposts = newPost.querySelector(".reposts");
+      if (data.reposts.count === 0) {
+        reposts.style.display = "none";
+      } else {
+        reposts.textContent = data.reposts.count;
+      }
+      const views = newPost.querySelector(".views");
+      if (data.views.count === 0) {
+        views.style.display = "none";
+      } else {
+        views.textContent = data.views.count;
+      }
+      widget.append(newPost);
+    }
+  </script>
+</body>
+</html>
