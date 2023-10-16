@@ -5,6 +5,8 @@
 Необходимо реализовать возможность кэширования уже загруженных данных: если пользователь закрыл страницу,
 а потом снова открыл ее, виджет должен отображать все загруженные ранее данные (новые данные должны подгружаться из учета уже загруженных ранее).
 При переполнении localStorage, данные, загруженные последними должны вытеснять данные загруженные первыми. -->
+
+<!-- Решение -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -192,8 +194,7 @@
         uniqueNewPosts.sort((a, b) => a.id - b.id);
 
         const storageLimit = 5 * 1024 * 1024; // 5 MB
-        const jsonAllPosts = JSON.stringify(allPosts);
-        const dataSize = new TextEncoder().encode(jsonAllPosts).length;
+        const dataSize = calculateLocalStorageSize();
 
         if (dataSize > storageLimit) {
           const postsToRemove = allPosts.length - uniqueNewPosts.length;
@@ -228,6 +229,8 @@
       }
     }
 
+    widget.addEventListener('scroll', handleScroll);
+
     const cachedData = localStorage.getItem('cachedData');
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
@@ -238,7 +241,19 @@
       makeRequest();
     }
 
-    widget.addEventListener('scroll', handleScroll);
+    function calculateLocalStorageSize() {
+      let totalSize = 0;
+
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          const keyBytes = new TextEncoder().encode(key);
+          const valueBytes = new TextEncoder().encode(localStorage[key]);
+          totalSize += keyBytes.length + valueBytes.length;
+        }
+      }
+
+      return totalSize;
+    }
 
     function createWidgetItem(data) {
       const template = document.querySelector(".template");

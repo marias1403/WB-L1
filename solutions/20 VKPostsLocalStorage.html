@@ -1,0 +1,39 @@
+<!-- Условие. Реализовать функцию подсчета объема памяти занимаемого данными в LocalStorage для предыдущей задачи.
+При изменении данных в localStorage в консоль должен выводиться объем занятой памяти / максимальный размер хранилища. -->
+
+<!-- Решение -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>20. Подсчет объема памяти LocalStorage для постов VK</title>
+</head>
+<body>
+  <script>
+    function calculateLocalStorageSize() {
+      let totalSize = 0;
+
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          const keyBytes = new TextEncoder().encode(key);
+          const valueBytes = new TextEncoder().encode(localStorage[key]);
+          totalSize += keyBytes.length + valueBytes.length;
+        }
+      }
+
+      return totalSize;
+    }
+
+    function displayLocalStorageUsage() {
+      const localStorageSize = calculateLocalStorageSize();
+      const maxSize = 5 * 1024 * 1024; // Максимальный размер LocalStorage (5 MB)
+
+      console.log(`Занято памяти в LocalStorage: ${localStorageSize} байт / ${maxSize} байт`);
+    }
+
+    // Отслеживаем изменения в LocalStorage и обновляем отображение
+    window.addEventListener('storage', displayLocalStorageUsage);
+  </script>
+</body>
+</html>
