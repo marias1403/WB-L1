@@ -108,6 +108,8 @@
   <div class="container">
     <h1 class="title">24. Таблица с данными</h1>
     <div class="wrapper">
+      <!-- В HTML-таблице, каждая колонка имеет заголовок <th>, и ряды данных находятся в теге <tbody>.
+      Каждая колонка таблицы также имеет кнопку для сортировки данных. -->
       <table class="table" id="table-body">
         <tr>
           <th>First name
@@ -141,13 +143,14 @@
     </div>
   </div>
   <script>
-    let tableData = [];
-    const tableBody = document.getElementById("table-data");
-    const paginationNumbers = document.getElementById("pagination-numbers");
-    const paginationLimit = 50;
-    let currentPage = 1;
-    let currentSortColumn = null;
-
+    // Определяем нужные переменные
+    let tableData = []; // Хранит данные
+    const tableBody = document.getElementById("table-data"); // Ссылка на часть таблицы с данными
+    const paginationNumbers = document.getElementById("pagination-numbers"); // Ссылка на элемент для пагинации
+    const paginationLimit = 50; // Количество строк на одной странице
+    let currentPage = 1; // Переменная со значением текущей страницы
+    let currentSortColumn = null; // Колонка, по которой выполняется сортировка.
+    // Функция добавляет кнопки для номеров страниц пагинации.
     const appendPageNumber = (index) => {
       const pageNumber = document.createElement("button");
       pageNumber.className = "pagination-number";
@@ -156,14 +159,14 @@
       pageNumber.setAttribute("aria-label", "Page " + index);
       paginationNumbers.appendChild(pageNumber);
     }
-
+    // Функция рассчитывает количество страниц и добавляет соответствующие номера страниц в пагинацию.
     const getPaginationNumbers = (tableData) => {
       const pageCount = Math.ceil(tableData.length / paginationLimit);
       for (let i = 1; i <= pageCount; i++) {
         appendPageNumber(i);
       }
     };
-
+    // Функция выделяет активную страницу в пагинации.
     const handleActivePageNumber = () => {
       document.querySelectorAll(".pagination-number").forEach((button) => {
         button.classList.remove("active");
@@ -173,7 +176,7 @@
         }
       });
     };
-
+    // Функция отображает данные для определенной страницы и обновляет выделение активной страницы в пагинации.
     const setCurrentPage = (pageNum) => {
       currentPage = pageNum;
       handleActivePageNumber();
@@ -189,7 +192,8 @@
         }
       });
     };
-
+    // Функция выполняет запрос на внешний ресурс с данными (используя fetch) и обрабатывает полученные данные,
+    // затем отображает их на странице и настраивает обработчики для пагинации.
     function fetchData() {
       fetch("http://www.filltext.com/?rows=1000&fname=%7BfirstName%7D&lname=%7BlastName%7D&tel=%7Bphone%7Cformat%7D&address=%7BstreetAddress%7D&city=%7Bcity%7D&state=%7BusState%7Cabbr%7D&zip=%7Bzip%7D&pretty=true")
         .then(response => response.json())
@@ -211,6 +215,7 @@
           console.error("Ошибка при получении данных:", error);
         });
     }
+    // Функция displayData отображает данные на странице, исходя из текущей страницы и данных.
     function displayData(data) {
       tableBody.innerHTML = '';
       data.forEach(item => {
@@ -225,6 +230,7 @@
       });
       setCurrentPage(currentPage);
     }
+    // Функция выполняет сортировку данных по выбранной колонке, как по возрастанию, так и по убыванию, и затем обновляет отображение таблицы.
     function sortTable(fieldName) {
       console.log(tableData);
       if (currentSortColumn === fieldName) {

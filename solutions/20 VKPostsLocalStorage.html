@@ -11,11 +11,15 @@
 </head>
 <body>
   <script>
+    // Это функция, которая вычисляет объем памяти, занимаемый данными в localStorage.
     function calculateLocalStorageSize() {
       let totalSize = 0;
-
+      // Итерируем по всем ключам в localStorage, получаем размер каждого ключа и его соответствующего значения и суммируем эти размеры.
       for (let key in localStorage) {
         if (localStorage.hasOwnProperty(key)) {
+          // Создаем новый экземпляр объекта TextEncoder, который предоставляет функциональность для кодирования текста в байты.
+          // Он используется для преобразования строковых данных (ключей и их значений) в байты, так как размер данных измеряется в байтах.
+          // Метод encode() преобразует это строковое значение (ключ) в массив байтов (бинарные данные), представляющих эту строку.
           const keyBytes = new TextEncoder().encode(key);
           const valueBytes = new TextEncoder().encode(localStorage[key]);
           totalSize += keyBytes.length + valueBytes.length;
@@ -24,15 +28,17 @@
 
       return totalSize;
     }
-
+    // Это функция, которая вызывает calculateLocalStorageSize() для вычисления размера данных в localStorage.
+    // Затем она выводит этот размер и максимальный размер хранилища (5 МБ) в консоль.
     function displayLocalStorageUsage() {
       const localStorageSize = calculateLocalStorageSize();
       const maxSize = 5 * 1024 * 1024; // Максимальный размер LocalStorage (5 MB)
-
       console.log(`Занято памяти в LocalStorage: ${localStorageSize} байт / ${maxSize} байт`);
     }
-
-    // Отслеживаем изменения в LocalStorage и обновляем отображение
+    // Добавляем слушатель события storage к объекту window.
+    // Событие storage срабатывает при изменениях в localStorage.
+    // Когда происходит такое событие, вызывается функция displayLocalStorageUsage(),
+    // которая пересчитывает размер данных в localStorage и выводит его в консоль.
     window.addEventListener('storage', displayLocalStorageUsage);
   </script>
 </body>

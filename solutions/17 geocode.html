@@ -129,7 +129,8 @@
     const addressList = document.getElementById("suggestions");
     const wrapper = document.getElementById("wrapper");
 
-    // Функция для выполнения геокодирования
+    // Асинхронная функция, которая отправляет запрос к API Яндекс.Карт
+    // для геокодирования введенного адреса. Она возвращает результаты в виде объекта JSON.
     async function geocodeAddress(address) {
       try {
         const response = await fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${address}&format=json`);
@@ -140,8 +141,9 @@
         return null;
       }
     }
-
-    // Функция для обновления выпадающего списка
+    // Это функция, которая обновляет выпадающий список результатами геокодирования.
+    // Если результатов нет, она отображает текст "Ничего не найдено".
+    // Если есть результаты, она отображает каждый результат в виде элемента списка, который можно выбрать.
     function updateAddressList(results) {
       console.log(results);
       addressList.innerHTML = '';
@@ -165,7 +167,9 @@
         });
       }
     }
-
+    // Функция для реализации дебаунсинга, что позволяет уменьшить количество запросов при быстром вводе.
+    // Она возвращает функцию, которая вызывает func после задержки delay миллисекунд.
+    // Если в этот промежуток времени происходит другой вызов функции, предыдущий вызов отменяется.
     function debounce(func, delay) {
       let timer;
       return function (...args) {
@@ -175,8 +179,9 @@
         }, delay);
       };
     }
-
-    // Обработчик события при вводе адреса
+    // Обработчик события, который вызывается при каждом изменении в поле ввода.
+    // Он вызывает функцию geocodeAddress для геокодирования введенного адреса
+    // и затем вызывает updateAddressList для обновления списка результатов.
     const debouncedInputHandler = debounce(async () => {
       const address = addressInput.value.replace(/\s+/g, '+');
       if (address === '') {
