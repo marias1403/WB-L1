@@ -154,27 +154,91 @@
       </div>
     </li>
   </template>
-  <script type="text/javascript">
+  <script>
     const accessToken = '0bc66ca80bc66ca80bc66ca85808d394fa00bc60bc66ca86eea7e892725ea937520866c';
     const groupId = -168377641;
     const count = 10;
     const version = 5.131;
-    function callback(result) {
+    let offset = 0;
+    const widget = document.getElementById("widget");
+    let isLoading = false;
+
+    const handleResponse = (result) => {
       if (result.response) {
-        const posts = result.response.items;
-        for (const post of posts) {
-          console.log(post);
-          createWidgetItem(post);
+        const newPosts = result.response.items;
+
+        const cachedData = localStorage.getItem('cachedData');
+        let cachedPosts = [];
+
+        if (cachedData) {
+          cachedPosts = JSON.parse(cachedData);
+        }
+
+        const uniqueNewPosts = newPosts.filter((newPost) => {
+          return !cachedPosts.some((cachedPost) => {
+            return cachedPost.id === newPost.id
+          });
+        });
+
+        if (uniqueNewPosts.length === 0) {
+          offset = cachedPosts.length;
+          makeRequest();
+          return;
+        }
+
+        const allPosts = [...cachedPosts, ...newPosts];
+
+        allPosts.sort((a, b) => a.id - b.id);
+        uniqueNewPosts.sort((a, b) => a.id - b.id);
+
+        const storageLimit = 5 * 1024 * 1024; // 5 MB
+        const jsonAllPosts = JSON.stringify(allPosts);
+        const dataSize = new TextEncoder().encode(jsonAllPosts).length;
+
+        if (dataSize > storageLimit) {
+          const postsToRemove = allPosts.length - uniqueNewPosts.length;
+          allPosts.splice(0, postsToRemove);
+        }
+
+        localStorage.setItem('cachedData', JSON.stringify(allPosts));
+
+        for (const post of uniqueNewPosts) {
+          widget.append(createWidgetItem(post));
         }
       } else {
         console.error('Ошибка в ответе:', result);
       }
     }
-    const script = document.createElement('SCRIPT');
-    script.src = `https://api.vk.com/method/wall.get?owner_id=${groupId}&count=${count}&access_token=${accessToken}&v=${version}&callback=callback`;
-    document.getElementsByTagName("head")[0].appendChild(script);
 
-    const widget = document.getElementById("widget");
+    const makeRequest = () => {
+      const script = document.createElement('SCRIPT');
+      script.src = `https://api.vk.com/method/wall.get?owner_id=${groupId}&count=${count}&access_token=${accessToken}&offset=${offset}&v=${version}&callback=handleResponse`;
+      document.getElementsByTagName("head")[0].appendChild(script);
+    }
+
+    const isUserAtBottom = () => {
+      return widget.scrollTop + widget.clientHeight >= widget.scrollHeight - 1;
+    }
+
+    const handleScroll = () => {
+      if (!isLoading && isUserAtBottom()) {
+        isLoading = true;
+        makeRequest();
+        isLoading = false;
+      }
+    }
+
+    const cachedData = localStorage.getItem('cachedData');
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      for (const post of parsedData) {
+        widget.append(createWidgetItem(post));
+      }
+    } else {
+      makeRequest();
+    }
+
+    widget.addEventListener('scroll', handleScroll);
 
     function createWidgetItem(data) {
       const template = document.querySelector(".template");
@@ -219,7 +283,7 @@
       } else {
         views.textContent = data.views.count;
       }
-      widget.append(newPost);
+      return newPost;
     }
   </script>
 </body>
