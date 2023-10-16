@@ -65,20 +65,25 @@
   <div class="container">
     <h1 class="title">25. Добавление и стилизация элемента</h1>
     <ul id="suggestions" class="list"></ul>
+    <!-- Вешаем слушатель на кнопку, который вызывает функцию при нажатии -->
     <button class="button" onclick="createAndStyleElement('li', 'suggestions', elementStyles)">Добавить элемент</button>
   </div>
   <script>
     function createAndStyleElement(tagName, parentId, styles) {
+      // Создаем новый HTML-элемент с указанным тегом
       const newElement = document.createElement(tagName);
+      // Применяем стили к новому элементу, используя объект elementStyles, который содержит CSS-свойства и их значения
       for (const property in styles) {
         if (styles.hasOwnProperty(property)) {
           newElement.style[property] = styles[property];
         }
       }
+      // Находим родительский элемент по его идентификатору
       const parent = document.getElementById(parentId);
+      // Добавляем новый элемент в родительский элемент с помощью append
       parent.append(newElement);
     }
-
+    // Объект со стилями, который передаем в функцию
     const elementStyles = {
       width: "80px",
       height: "80px",

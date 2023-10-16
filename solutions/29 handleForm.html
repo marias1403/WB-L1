@@ -100,12 +100,18 @@
     </form>
   </div>
   <script>
+    // Определение функции handleForm, которая будет вызываться при отправке формы. Она принимает объект события e
     function handleForm(e) {
+      // Предотвращаем стандартное действие отправки формы (перезагрузку страницы)
       e.preventDefault();
+      // Получаем значения полей ввода "Имя" и "Почта" из формы.
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
+      // Выводим окно с информацией, введенной в поля формы, включая имя и почту
       alert("Имя: " + name + "\nПочта: " + email);
     }
+    // Находим форму по классу "form" и добавляем обработчик события на отправку формы,
+    // который вызывает функцию handleForm при отправке формы.
     const form = document.querySelector(".form");
     form.addEventListener("submit", handleForm);
   </script>

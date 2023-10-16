@@ -30,6 +30,7 @@
       line-height: 48px;
       color: #ffffff;
     }
+    /* Определяем две анимации grow и shrink с помощью transform */
     @keyframes grow {
       0% {
         transform: scale(1);
@@ -83,20 +84,29 @@
   <div class="container">
     <h1 class="title">27. Добавить анимацию для элемента</h1>
     <div class="element" id="elementToAnimate"></div>
+    <!-- Вешаем слушатель на кнопку, который вызывает функцию при нажатии -->
     <button class="button" id="animateButton" onclick="addElementAnimation()">Включить анимацию</button>
   </div>
   <script>
+    // Получаем ссылки на два элемента
     const elementToAnimate = document.getElementById("elementToAnimate");
     const animateButton = document.getElementById("animateButton");
+    // Создаем переменную, которая будет указывать, активна ли анимация в данный момент
     let animationActive = false;
     function addElementAnimation() {
+      // Проверяем состояние animationActive
       if (animationActive) {
+        // Если animationActive равно true, то анимация удаляется,
+        // и текст кнопки изменяется на "Включить анимацию"
         elementToAnimate.style.animation = "none";
         animateButton.textContent = "Включить анимацию";
       } else {
+        // Если анимация не активна, то задаются две анимации (grow и shrink) элементу,
+        // и текст кнопки меняется на "Остановить анимацию"
         elementToAnimate.style.animation = "grow 2s ease-in-out infinite, shrink 2s ease-in-out infinite";
         animateButton.textContent = "Остановить анимацию";
       }
+      // Инвертируем состояние animationActive
       animationActive = !animationActive;
     }
   </script>
