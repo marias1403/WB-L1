@@ -157,14 +157,17 @@
     </li>
   </template>
   <script>
-    const accessToken = '0bc66ca80bc66ca80bc66ca85808d394fa00bc60bc66ca86eea7e892725ea937520866c';
-    const groupId = -168377641;
-    const count = 10;
-    const version = 5.131;
-    let offset = 0;
-    const widget = document.getElementById("widget");
-    let isLoading = false;
-
+    // Определяем необходимые переменные
+    const accessToken = '0bc66ca80bc66ca80bc66ca85808d394fa00bc60bc66ca86eea7e892725ea937520866c'; // доступа к API VK
+    const groupId = -168377641; // идентификатор паблика
+    const count = 10; // количество загружаемых постов)
+    const version = 5.131; // версия API
+    let offset = 0; // количество постов, которое пропускаем
+    const widget = document.getElementById("widget"); // контейнер виджета
+    let isLoading = false; // состояние загрузки
+    // Функция обрабатывает ответ от сервера VK при запросе постов.
+    // После получения ответа, код проверяет, были ли получены новые посты,
+    // и если да, сохраняет их в локальном хранилище (localStorage) с учетом кэшированных данных.
     const handleResponse = (result) => {
       if (result.response) {
         const newPosts = result.response.items;
@@ -175,34 +178,37 @@
         if (cachedData) {
           cachedPosts = JSON.parse(cachedData);
         }
-
+        // Cоздаем новый массив, который содержит только те элементы из newPosts, которых нет в cachedPosts
         const uniqueNewPosts = newPosts.filter((newPost) => {
           return !cachedPosts.some((cachedPost) => {
             return cachedPost.id === newPost.id
           });
         });
-
+        // Если массив uniqueNewPosts пуст (то есть все новые сообщения уже были кэшированы),
+        // то переменной offset присваиваем значение, равное длине cachedPosts,
+        // и вызываем функцию makeRequest
         if (uniqueNewPosts.length === 0) {
           offset = cachedPosts.length;
           makeRequest();
           return;
         }
-
+        // Объединяем в массив allPosts
         const allPosts = [...cachedPosts, ...newPosts];
-
+        // Сортируем по свойству id
         allPosts.sort((a, b) => a.id - b.id);
         uniqueNewPosts.sort((a, b) => a.id - b.id);
-
+        // Вычисляем ограничение размера хранилища и размер текущих данных
         const storageLimit = 5 * 1024 * 1024; // 5 MB
         const dataSize = calculateLocalStorageSize();
-
+        //  Если размер данных превышает ограничение, удаляем столько сообщений из allPosts,
+        //  сколько необходимо, чтобы размер данных стал ниже ограничения.
         if (dataSize > storageLimit) {
           const postsToRemove = allPosts.length - uniqueNewPosts.length;
           allPosts.splice(0, postsToRemove);
         }
-
+        // Все данные из allPosts сохраняем в локальном хранилище браузера с ключом 'cachedData' в формате JSON.
         localStorage.setItem('cachedData', JSON.stringify(allPosts));
-
+        // Для каждого элемента post в массиве uniqueNewPosts вызываем функцию createWidgetItem(post), и результат добавляется в виджет
         for (const post of uniqueNewPosts) {
           widget.append(createWidgetItem(post));
         }
@@ -210,17 +216,18 @@
         console.error('Ошибка в ответе:', result);
       }
     }
-
+    // Функция создает динамический <script> элемент для загрузки данных о постах с сервера VK
     const makeRequest = () => {
       const script = document.createElement('SCRIPT');
       script.src = `https://api.vk.com/method/wall.get?owner_id=${groupId}&count=${count}&access_token=${accessToken}&offset=${offset}&v=${version}&callback=handleResponse`;
       document.getElementsByTagName("head")[0].appendChild(script);
     }
-
+    // Функция проверяет, долистал ли пользователь до конца виджета.
     const isUserAtBottom = () => {
       return widget.scrollTop + widget.clientHeight >= widget.scrollHeight - 1;
     }
-
+    // Функция обрабатывает событие прокрутки виджета и, если пользователь долистал до конца,
+    // инициирует новый запрос для загрузки дополнительных постов.
     const handleScroll = () => {
       if (!isLoading && isUserAtBottom()) {
         isLoading = true;
@@ -228,9 +235,11 @@
         isLoading = false;
       }
     }
-
+    // Слушатель события 'scroll'
     widget.addEventListener('scroll', handleScroll);
-
+    // При загрузке страницы, код проверяет, есть ли кэшированные данные о постах в localStorage.
+    // Если они есть, они отображаются на странице.
+    // В противном случае инициируется запрос для получения первоначальных постов.
     const cachedData = localStorage.getItem('cachedData');
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
@@ -240,7 +249,8 @@
     } else {
       makeRequest();
     }
-
+    // Функция вычисляет размер данных в localStorage,
+    // чтобы убедиться, что не превышен лимит хранения.
     function calculateLocalStorageSize() {
       let totalSize = 0;
 
@@ -254,7 +264,8 @@
 
       return totalSize;
     }
-
+    // Функция создает отдельный элемент поста на основе данных, полученных от сервера VK,
+    // и вставляет его в виджет.
     function createWidgetItem(data) {
       const template = document.querySelector(".template");
       const newPost = template.content.querySelector(".post").cloneNode(true);
