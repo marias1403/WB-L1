@@ -15,6 +15,10 @@ function traverseDOM(element, action) {
 
 // Пример использования функции для вывода информации о тегах в консоль
 const rootElement = document.getElementById('root'); // Замените 'root' на ID вашего корневого элемента
-traverseDOM(rootElement, function(element) {
-  console.log(element.tagName);
-});
+if (rootElement) {
+  traverseDOM(rootElement, function(element) {
+    console.log(element.tagName);
+  });
+} else {
+  console.error('Корневой элемент не найден');
+}

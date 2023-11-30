@@ -18,7 +18,7 @@ function isWeirdNumber1(number) {
   // Используем let, чтобы мы могли изменять значение переменной
   let sumOfDivisors = 0;
   // Проходимся циклом и проверяем, если i в квадрате меньше или равно number
-  for (let i = 0; i * i <= number; i++) {
+  for (let i = 1; i * i <= number; i++) {
   // Если остаток от деления входного числа на i равно нулю, то суммируем значение i к сумме делителей
     if (number % i === 0) {
       sumOfDivisors += i;
